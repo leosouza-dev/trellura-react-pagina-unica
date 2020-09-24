@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 
 import conecta from '../../services/api/index';
-import { Form, Header, MainContainer, List, Card, OnlineList, FormModal } from './style';
+import { Form, Header, Mensagem, MainContainer, List, Card, OnlineList, FormModal } from './style';
 
 const conexao = conecta();
 Modal.setAppElement('#root');
@@ -21,6 +21,7 @@ const Home = () => {
   const [tipoModal, setTipoModal] = useState('');
   const [tituloNovoCard, setTituloNovoCard] = useState('');
   const [listaDeCards, setListaDeCards] = useState<Card[]>([]);
+  const [noGrupo, setNoGrupo] = useState(false);
 
   const [tituloSelecionado, setTituloSelecionado] = useState('');
 
@@ -104,7 +105,10 @@ const Home = () => {
     </div>
   </Header>
 
-  <MainContainer>
+  {noGrupo == false && <Mensagem>Bem vinda/o ao Trellura!</Mensagem>}
+
+  {noGrupo && 
+    <MainContainer>
     <div className="divTarefas">
       <List>
         <h1>Tarefa</h1>
@@ -156,6 +160,7 @@ const Home = () => {
     </ul>
     </OnlineList>
   </MainContainer>
+  }
 
   <Modal
         isOpen={modalIsOpen}

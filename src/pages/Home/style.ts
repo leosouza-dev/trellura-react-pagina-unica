@@ -29,6 +29,22 @@ export const Header = styled.header`
   }
 `;
 
+export const Mensagem = styled.span`
+  /* background-color: ${shade(0.2, '#04d361')}; */
+  background-color: #16D377;
+  box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
+  color: white;
+  max-width: 700px;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 5px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+`;
+
 export const Form = styled.form`
   max-width: 500px;
   border-radius: 10px;
