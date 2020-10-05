@@ -110,7 +110,6 @@ export const List = styled.div`
     margin-bottom: 10px;
     color: #3a3a3a;
   }
-  }
 
   button {
     display: block;
@@ -141,6 +140,10 @@ export const Card = styled.div`
   box-shadow: 0 1px 4px 0 rgba(192, 208, 230, 0.8);
   max-width: 250px;
   cursor: pointer;
+
+  input{
+    display: none;
+  }
 `;
 
 // lista de pessoas Online

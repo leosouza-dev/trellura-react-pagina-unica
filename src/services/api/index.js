@@ -6,8 +6,8 @@ export default () => {
   .build();
 
   conexao.start().then(() => {
-    console.log(`[App] connectionId = ${conexao.connectionId}`);
-  }).catch(() => {console.log('error')})
+    console.log(`Conectado -> connectionId = ${conexao.connectionId}`);
+  }).catch(() => {console.log('Não foi Possível Conectar com o HUB')})
   return conexao;
 }
 

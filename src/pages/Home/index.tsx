@@ -24,6 +24,8 @@ const Home = () => {
   const [noGrupo, setNoGrupo] = useState(false);
 
   const [tituloSelecionado, setTituloSelecionado] = useState('');
+  const [idSelecionado, setIdSelecionado] = useState(0);
+  const [statusSelecionado, setStatusSelecionado] = useState(0);
 
   // atualiza o numero de pessoas no header - quando conecta com o hub
   conexao.on('atualizarTotalUsuarios', (totalUser: number) =>
@@ -41,6 +43,7 @@ const Home = () => {
     event.preventDefault();
     conexao.invoke('Entrar', usuario).then(() => {
     });
+    console.log('nome do usuário', usuario)
     setUsuario('');
   }
 
@@ -49,6 +52,8 @@ const Home = () => {
   conexao.on('entrouNoGrupo', (cards: Card[]) => {
     console.log(cards);
     setListaDeCards(cards);
+    setNoGrupo(true);
+    console.log("Lista de Cards", listaDeCards)
   })
 
   // atualiza o titulo do novo card
@@ -72,15 +77,34 @@ const Home = () => {
   }
 
   //atualizarBoard após enviard novo card
-  conexao.on('atualizarBoard', (cards: Card[]) => setListaDeCards(cards));
+  conexao.on('atualizarBoard', (cards: Card[]) => {
+    console.log('cards que vieram do servdior:', cards)
+    setListaDeCards(cards)
+  });
 
   // abrir um card...
   function handleAbrirCard(e: any) {
     const { target } = e;
-    console.log(target);
-    setTituloSelecionado(target);
-    setTipoModal('abreCard');
-    setModalIsOpen(true);
+    console.log('target:', target);
+    console.log('value:', target.value);
+
+    const cardToUpdate = listaDeCards.find(c => c.id == target.value)
+
+    if(cardToUpdate != null){
+      setIdSelecionado(target.value);
+      setStatusSelecionado(cardToUpdate.status)
+      setTituloSelecionado(cardToUpdate?.title);
+      setTipoModal('abreCard');
+      setModalIsOpen(true);
+    }
+  }
+
+  function handleAtualizaCard(){
+
+  }
+
+  function handleExcluirCard(){
+
   }
 
   return (
@@ -114,7 +138,12 @@ const Home = () => {
         <h1>Tarefa</h1>
         <ul>
           {listaDeCards.filter(c => c.status == 1).map(card => (
-              <Card onClick={handleAbrirCard} key={card.id}><p>{card.title}</p></Card>
+              // <Card onClick={handleAbrirCard} key={card.id}><p>{card.title}</p>
+              <label onClick={handleAbrirCard}>
+                <Card key={card.id}><p>{card.title}</p>
+                    <input type="checkbox" value={card.id} />
+                </Card>
+              </label>
           ))}
         </ul>
         <button onClick={() => {setModalIsOpen(true); setTipoModal('novoCard')}} type="button">
@@ -180,9 +209,21 @@ const Home = () => {
         {tipoModal == 'abreCard' &&
         <>
           <h1>Editar Card</h1>
-          <FormModal>
+          <FormModal onSubmit={handleAtualizaCard}>
             <input type="text" value={tituloSelecionado}/>
+            <button>Atualizar</button> 
+
+            <div>
+              <select value={statusSelecionado}>
+                <option value="1">Tarefa</option>
+                <option value="2">Fazendo</option>
+                <option value="3">Testando</option>
+                <option value="4">Feito</option>
+              </select>
+            </div>
           </FormModal>
+
+          <button onClick={handleExcluirCard}>Excluir Card</button>
         </>
         }
 
@@ -197,6 +238,7 @@ const Home = () => {
               placeholder="Digite o nome da tarefa"
             />
             <button type="submit">Adicionar</button>
+
           </FormModal>
           <button
             onClick={() => setModalIsOpen(false)}
