@@ -103,8 +103,11 @@ const Home = () => {
 
   }
 
-  function handleExcluirCard(){
-
+  function handleExcluirCard(event: any){
+    conexao.invoke('ApagarCartao', idSelecionado).then(() => {
+    }).catch((error: any) => console.log(error))
+    setModalIsOpen(false);
+    event.preventDefault();
   }
 
   return (
