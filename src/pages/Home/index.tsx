@@ -40,11 +40,13 @@ const Home = () => {
 
   // envia o nome do usuário e entra no grupo
   async function handleSubmit(event: any) {
-    event.preventDefault();
+    // event.preventDefault();
     conexao.invoke('Entrar', usuario).then(() => {
     });
     console.log('nome do usuário', usuario)
     setUsuario('');
+    event.preventDefault();
+
   }
 
   // Quando a pessoa entra no grupo, o hub chama esse método para atualizar a lista de pessoas online
@@ -85,8 +87,8 @@ const Home = () => {
   // abrir um card...
   function handleAbrirCard(e: any) {
     const { target } = e;
-    console.log('target:', target);
-    console.log('value:', target.value);
+    // console.log('target:', target);
+    // console.log('value:', target.value);
 
     const cardToUpdate = listaDeCards.find(c => c.id == target.value)
 
@@ -99,9 +101,28 @@ const Home = () => {
     }
   }
 
-  function handleAtualizaCard(){
+  function handleAtualizaCard(event: any){
+    event.preventDefault();
 
+    console.log('idSelecionado: ', idSelecionado);
+    console.log('tituloSelecionado: ', tituloSelecionado);
+    console.log('statusSelecionado: ', statusSelecionado);
+
+    conexao.invoke('AtualizarCartao', idSelecionado, tituloSelecionado, statusSelecionado.toString()).then(() => {
+    }).catch((error: any) => console.log(error))
+    setModalIsOpen(false);
+    // event.preventDefault();
   }
+
+  function handleAtualizaTituloCard(e: any){
+    const { value } = e.target;
+    setTituloSelecionado(value);
+  }
+
+  function handleStatusAlterado(e: any){
+    const { value } = e.target;
+    setStatusSelecionado(value);
+  } 
 
   function handleExcluirCard(event: any){
     conexao.invoke('ApagarCartao', idSelecionado).then(() => {
@@ -142,8 +163,8 @@ const Home = () => {
         <ul>
           {listaDeCards.filter(c => c.status == 1).map(card => (
               // <Card onClick={handleAbrirCard} key={card.id}><p>{card.title}</p>
-              <label onClick={handleAbrirCard}>
-                <Card key={card.id}><p>{card.title}</p>
+              <label key={card.id} onClick={handleAbrirCard}>
+                <Card><p>{card.title}</p>
                     <input type="checkbox" value={card.id} />
                 </Card>
               </label>
@@ -158,7 +179,12 @@ const Home = () => {
         <h1>Fazendo</h1>
         <ul>
         {listaDeCards.filter(c => c.status == 2).map(card => (
-            <Card key={card.id}><p>{card.title}</p></Card>
+            // <Card key={card.id}><p>{card.title}</p></Card>
+            <label key={card.id} onClick={handleAbrirCard}>
+            <Card><p>{card.title}</p>
+                <input type="checkbox" value={card.id} />
+            </Card>
+          </label>
           ))}
         </ul>
       </List>
@@ -167,7 +193,12 @@ const Home = () => {
         <h1>Testando</h1>
         <ul>
         {listaDeCards.filter(c => c.status == 3).map(card => (
-            <Card key={card.id}><p>{card.title}</p></Card>
+            // <Card key={card.id}><p>{card.title}</p></Card>
+            <label key={card.id} onClick={handleAbrirCard}>
+            <Card><p>{card.title}</p>
+                <input type="checkbox" value={card.id} />
+            </Card>
+          </label>
           ))}
         </ul>
       </List>
@@ -176,7 +207,12 @@ const Home = () => {
         <h1>Feito</h1>
         <ul>
         {listaDeCards.filter(c => c.status == 4).map(card => (
-            <Card key={card.id}><p>{card.title}</p></Card>
+            // <Card key={card.id}><p>{card.title}</p></Card>
+            <label key={card.id} onClick={handleAbrirCard}>
+            <Card><p>{card.title}</p>
+                <input type="checkbox" value={card.id} />
+            </Card>
+          </label>
           ))}
         </ul>
       </List>
@@ -213,17 +249,18 @@ const Home = () => {
         <>
           <h1>Editar Card</h1>
           <FormModal onSubmit={handleAtualizaCard}>
-            <input type="text" value={tituloSelecionado}/>
+            <input onChange={handleAtualizaTituloCard} type="text" value={tituloSelecionado}/>
             <button>Atualizar</button> 
 
             <div>
-              <select value={statusSelecionado}>
+              <select onChange={handleStatusAlterado} value={statusSelecionado}>
                 <option value="1">Tarefa</option>
                 <option value="2">Fazendo</option>
                 <option value="3">Testando</option>
                 <option value="4">Feito</option>
               </select>
             </div>
+
           </FormModal>
 
           <button onClick={handleExcluirCard}>Excluir Card</button>
